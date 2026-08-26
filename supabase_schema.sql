@@ -3,12 +3,7 @@
 -- For use with Supabase / PostgreSQL
 -- -------------------------------------------------------------
 
--- Drop tables if they exist (clean setup)
-DROP TRIGGER IF EXISTS trg_update_wallet_balance ON wallet_transactions;
-DROP FUNCTION IF EXISTS update_wallet_balance();
-DROP TRIGGER IF EXISTS trg_create_wallet_for_profile ON profiles;
-DROP FUNCTION IF EXISTS create_wallet_for_profile();
-
+-- Drop tables if they exist (clean setup - CASCADE automatically removes associated triggers)
 DROP TABLE IF EXISTS bets CASCADE;
 DROP TABLE IF EXISTS market_rounds CASCADE;
 DROP TABLE IF EXISTS withdrawals CASCADE;
@@ -16,6 +11,10 @@ DROP TABLE IF EXISTS deposits CASCADE;
 DROP TABLE IF EXISTS wallet_transactions CASCADE;
 DROP TABLE IF EXISTS wallets CASCADE;
 DROP TABLE IF EXISTS profiles CASCADE;
+
+-- Drop functions
+DROP FUNCTION IF EXISTS update_wallet_balance();
+DROP FUNCTION IF EXISTS create_wallet_for_profile();
 
 -- 1. Profiles Table (Synced/created from Clerk authentication user data)
 CREATE TABLE profiles (
