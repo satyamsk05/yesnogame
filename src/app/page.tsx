@@ -37,12 +37,13 @@ interface Bet {
 }
 
 export default function Home() {
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
 
   // Price & Market states
   const [livePrice, setLivePrice] = useState<number>(0);
   const prevPriceRef = useRef<number>(0);
   const [priceDirection, setPriceDirection] = useState<"up" | "down" | "flat">("flat");
+  const [timeframe, setTimeframe] = useState<string>("1m");
 
   // Round states
   const [activeRound, setActiveRound] = useState<Round | null>(null);
@@ -213,14 +214,6 @@ export default function Home() {
   const pendingBets = bets.filter((b) => b.status === "pending");
   const settledBets = bets.filter((b) => b.status !== "pending");
 
-  // Determine pricing color
-  const priceColorClass =
-    priceDirection === "up"
-      ? styles.statusWon
-      : priceDirection === "down"
-      ? styles.statusLost
-      : "";
-
   return (
     <div className={styles.main}>
       <Navbar />
@@ -230,13 +223,27 @@ export default function Home() {
         <div className={`${styles.chartCard} glass-panel`}>
           <div className={styles.chartHeader}>
             <div className={styles.chartTitleGroup}>
-              <h2 className={styles.chartTitle}>BTC / USD Ticker</h2>
-              <span className={styles.marketBadge}>1 MIN CYCLE</span>
+              <h2 className={styles.chartTitle}>BTC / USD Market</h2>
+              <span className={styles.marketBadge}>1m cycle</span>
             </div>
-            <div className={`${styles.livePriceBadge} ${priceColorClass}`}>
+            <div className={styles.livePriceBadge}>
               ${livePrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
           </div>
+
+          {/* Timeframe Selector Bar */}
+          <div className={styles.timeframeBar}>
+            {["1m", "2m", "3m", "5m", "10m", "15m", "30m", "1h"].map((tf) => (
+              <button
+                key={tf}
+                onClick={() => setTimeframe(tf)}
+                className={`${styles.timeframeBtn} ${timeframe === tf ? styles.timeframeActive : ""}`}
+              >
+                {tf}
+              </button>
+            ))}
+          </div>
+
           <div className={styles.chartBody}>
             <BTCChart
               onPriceUpdate={handlePriceUpdate}
@@ -251,8 +258,8 @@ export default function Home() {
           <div className={`${styles.controlCard} glass-panel`}>
             {/* Live Ticker */}
             <div className={styles.priceDisplay}>
-              <div className={styles.priceLabel}>Bitcoin Price</div>
-              <div className={`${styles.priceValue} ${priceColorClass}`}>
+              <div className={styles.priceLabel}>Bitcoin Live Price</div>
+              <div className={styles.priceValue}>
                 ${livePrice.toFixed(2)}
               </div>
             </div>
@@ -260,15 +267,15 @@ export default function Home() {
             {/* Timer countdown */}
             <div className={styles.timerSection}>
               <div className={styles.timerLabel}>
-                {isLocked ? "LOCKOUT ACTIVE" : "ACCEPTING PREDICTIONS"}
+                {isLocked ? "ROUND LOCKED" : "Will BTC go UP or DOWN?"}
               </div>
               <div className={styles.timerClock}>
                 {formatTime(timeLeft)}
               </div>
               {isLocked ? (
-                <div className={styles.lockedText}>🔒 Cuts complete. Settling in {timeLeft}s</div>
+                <div className={styles.lockedText}>Locked. Settle in {timeLeft}s</div>
               ) : (
-                <div className={styles.activeText}>🟢 UP or DOWN predictions open</div>
+                <div className={styles.activeText}>Accepting predictions</div>
               )}
             </div>
 
@@ -281,13 +288,13 @@ export default function Home() {
             {/* Alert boxes */}
             {errorMsg && (
               <div className={`${styles.alertBox} ${styles.errorAlert}`}>
-                <AlertCircle size={16} style={{ display: "inline", marginRight: 8, verticalAlign: "middle" }} />
+                <AlertCircle size={15} style={{ display: "inline", marginRight: 6, verticalAlign: "middle" }} />
                 <span>{errorMsg}</span>
               </div>
             )}
             {successMsg && (
               <div className={`${styles.alertBox} ${styles.successAlert}`}>
-                <Award size={16} style={{ display: "inline", marginRight: 8, verticalAlign: "middle" }} />
+                <Award size={15} style={{ display: "inline", marginRight: 6, verticalAlign: "middle" }} />
                 <span>{successMsg}</span>
               </div>
             )}
@@ -319,7 +326,7 @@ export default function Home() {
                     ))}
                   </div>
                   <div className={styles.payoutNotice}>
-                    Potential Win: <span className={styles.payoutHighlight}>+₹{(wager * 0.8).toFixed(2)}</span> (Payout: ₹{(wager * 1.8).toFixed(2)})
+                    Potential Win: <span className={styles.payoutHighlight}>+₹{(wager * 0.8).toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -329,22 +336,22 @@ export default function Home() {
                     disabled={isLocked || placingBet || wager > balance}
                     className={`${styles.predictBtn} ${styles.btnUp}`}
                   >
-                    <span>🟢 UP</span>
-                    <span className={styles.btnSubtext}>Price goes higher</span>
+                    <span>YES / UP</span>
+                    <span className={styles.btnSubtext}>Price rises</span>
                   </button>
                   <button
                     onClick={() => handlePlaceBet("DOWN")}
                     disabled={isLocked || placingBet || wager > balance}
                     className={`${styles.predictBtn} ${styles.btnDown}`}
                   >
-                    <span>🔴 DOWN</span>
-                    <span className={styles.btnSubtext}>Price goes lower</span>
+                    <span>NO / DOWN</span>
+                    <span className={styles.btnSubtext}>Price drops</span>
                   </button>
                 </div>
               </>
             ) : (
               <SignInButton mode="modal">
-                <button className={styles.loginPromptBtn}>Sign In to Place Predictions</button>
+                <button className={styles.loginPromptBtn}>Sign In to Predict</button>
               </SignInButton>
             )}
           </div>
@@ -356,12 +363,12 @@ export default function Home() {
         {/* Active Predictions */}
         <div className={`${styles.historyCard} glass-panel`}>
           <h3 className={styles.historyTitle}>
-            <Clock size={18} />
+            <Clock size={16} />
             <span>Active Predictions ({pendingBets.length})</span>
           </h3>
           <div className={styles.tableWrapper}>
             {pendingBets.length === 0 ? (
-              <div className={styles.emptyState}>No active wagers. Make a prediction above!</div>
+              <div className={styles.emptyState}>No active predictions. Choose UP or DOWN above!</div>
             ) : (
               <table className={styles.table}>
                 <thead>
@@ -392,11 +399,11 @@ export default function Home() {
                           </span>
                         </td>
                         <td>₹{parseFloat(bet.stake.toString()).toFixed(2)}</td>
-                        <td>${entryPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                        <td>${livePrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                        <td>${entryPrice.toLocaleString()}</td>
+                        <td>${livePrice.toLocaleString()}</td>
                         <td>
                           {isWinning === null ? (
-                            <span className={styles.statusPending}>Bouncing</span>
+                            <span className={styles.statusPending}>Pending</span>
                           ) : isWinning ? (
                             <span className={styles.statusWon}>Winning (+₹{(bet.stake * 0.8).toFixed(0)})</span>
                           ) : (
@@ -415,12 +422,12 @@ export default function Home() {
         {/* Settled Predictions */}
         <div className={`${styles.historyCard} glass-panel`}>
           <h3 className={styles.historyTitle}>
-            <History size={18} />
-            <span>Recent History ({settledBets.length})</span>
+            <History size={16} />
+            <span>Settled Predictions ({settledBets.length})</span>
           </h3>
           <div className={styles.tableWrapper}>
             {settledBets.length === 0 ? (
-              <div className={styles.emptyState}>No settled rounds found.</div>
+              <div className={styles.emptyState}>No prediction history found.</div>
             ) : (
               <table className={styles.table}>
                 <thead>
@@ -449,8 +456,8 @@ export default function Home() {
                           </span>
                         </td>
                         <td>₹{parseFloat(bet.stake.toString()).toFixed(2)}</td>
-                        <td>${entryPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                        <td>${endPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                        <td>${entryPrice.toLocaleString()}</td>
+                        <td>${endPrice.toLocaleString()}</td>
                         <td>
                           {isRefunded ? (
                             <span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>REFUNDED</span>

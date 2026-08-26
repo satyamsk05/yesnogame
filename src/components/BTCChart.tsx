@@ -37,12 +37,12 @@ export default function BTCChart({ onPriceUpdate, activeBets, roundStartPrice }:
         fontFamily: "system-ui, sans-serif",
       },
       grid: {
-        vertLines: { color: "rgba(255, 255, 255, 0.02)" },
-        horzLines: { color: "rgba(255, 255, 255, 0.02)" },
+        vertLines: { color: "#f3f4f6" },
+        horzLines: { color: "#f3f4f6" },
       },
       rightPriceScale: {
         borderVisible: false,
-        textColor: "#94a3b8",
+        textColor: "#64748b",
       },
       timeScale: {
         borderVisible: false,
@@ -53,9 +53,9 @@ export default function BTCChart({ onPriceUpdate, activeBets, roundStartPrice }:
 
     // 2. Initialize Area Series
     const series = chart.addSeries(AreaSeries, {
-      topColor: "rgba(59, 130, 246, 0.2)",
-      bottomColor: "rgba(59, 130, 246, 0.0)",
-      lineColor: "#3b82f6",
+      topColor: "rgba(37, 99, 235, 0.04)",
+      bottomColor: "rgba(37, 99, 235, 0.0)",
+      lineColor: "#2563eb",
       lineWidth: 2,
       crosshairMarkerVisible: true,
     });

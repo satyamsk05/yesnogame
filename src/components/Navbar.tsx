@@ -29,10 +29,6 @@ export default function Navbar() {
             <User size={18} />
             <span>Profile & Wallet</span>
           </Link>
-          <Link href="/admin" className={`${styles.navLink} ${pathname === "/admin" ? styles.active : ""}`}>
-            <Terminal size={18} />
-            <span>Dev Console</span>
-          </Link>
         </nav>
 
         <div className={styles.authGroup}>

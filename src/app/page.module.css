@@ -9,32 +9,34 @@
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px;
+  padding: 32px 24px;
   display: grid;
   grid-template-columns: 1fr 380px;
-  gap: 24px;
+  gap: 32px;
 }
 
 @media (max-width: 1024px) {
   .workspace {
     grid-template-columns: 1fr;
     padding: 16px;
+    gap: 24px;
   }
 }
 
 .chartCard {
-  padding: 20px;
+  padding: 24px;
   min-height: 480px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 12px;
 }
 
 .chartHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .chartTitleGroup {
@@ -47,23 +49,26 @@
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
+  letter-spacing: -0.3px;
 }
 
 .marketBadge {
-  background: rgba(59, 130, 246, 0.12);
-  color: var(--color-blue);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
   padding: 4px 10px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .livePriceBadge {
   font-family: var(--font-mono);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  transition: color 0.15s ease;
+  color: var(--text-primary);
 }
 
 .chartBody {
@@ -79,70 +84,71 @@
 }
 
 .controlCard {
-  padding: 24px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  border-radius: 12px;
 }
 
 .priceDisplay {
   text-align: center;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
 }
 
 .priceLabel {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
   margin-bottom: 4px;
 }
 
 .priceValue {
   font-family: var(--font-mono);
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -1px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
 }
 
 .timerSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .timerLabel {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .timerClock {
   font-family: var(--font-mono);
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-size: 36px;
+  font-weight: 700;
   color: var(--text-primary);
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .lockedText {
   color: var(--color-down);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  text-shadow: 0 0 8px var(--color-down-glow);
   text-align: center;
 }
 
 .activeText {
   color: var(--color-up);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  text-shadow: 0 0 8px var(--color-up-glow);
   text-align: center;
 }
 
@@ -150,16 +156,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 13.5px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 16px;
 }
 
 .balanceLabel {
   color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .balanceValue {
   font-weight: 700;
-  color: var(--color-gold);
+  color: var(--text-primary);
 }
 
 .wagerSection {
@@ -178,26 +187,27 @@
   position: absolute;
   left: 14px;
   color: var(--text-secondary);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .wagerInput {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  padding: 12px 12px 12px 32px;
+  padding: 10px 12px 10px 32px;
   font-family: var(--font-mono);
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .wagerInput:focus {
   border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 .quickWagerRow {
@@ -207,30 +217,32 @@
 }
 
 .quickWagerBtn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   padding: 8px 0;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .quickWagerBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: #f9fafb;
+  border-color: #d1d5db;
   color: var(--text-primary);
 }
 
 .quickWagerActive {
-  background: rgba(59, 130, 246, 0.15);
+  background: rgba(37, 99, 235, 0.04);
   border-color: var(--color-blue);
-  color: var(--text-primary);
+  color: var(--color-blue);
 }
 
 .payoutNotice {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 11.5px;
+  color: var(--text-secondary);
   text-align: center;
 }
 
@@ -249,66 +261,92 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 16px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 16px;
+  gap: 2px;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
   color: #ffffff;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btnUp {
-  background: linear-gradient(135deg, var(--color-up), #059669);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+  background: var(--color-up);
 }
 
 .btnUp:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  background: #059669;
 }
 
 .btnDown {
-  background: linear-gradient(135deg, var(--color-down), #dc2626);
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+  background: var(--color-down);
 }
 
 .btnDown:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+  background: #dc2626;
 }
 
 .predictBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
 }
 
 .btnSubtext {
   font-size: 11px;
   font-weight: 500;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .loginPromptBtn {
   width: 100%;
-  background: linear-gradient(135deg, var(--color-blue), #2563eb);
+  background: var(--color-blue);
   color: #ffffff;
-  padding: 14px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .loginPromptBtn:hover {
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-  transform: translateY(-1px);
+  background: #1d4ed8;
 }
 
+/* Timeframe Bar styling */
+.timeframeBar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #f3f4f6;
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+
+.timeframeBtn {
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.timeframeBtn:hover {
+  color: var(--text-primary);
+}
+
+.timeframeActive {
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* History logs section */
 .historySection {
   max-width: 1280px;
   width: 100%;
@@ -316,30 +354,33 @@
   padding: 0 24px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 32px;
 }
 
 @media (max-width: 768px) {
   .historySection {
     grid-template-columns: 1fr;
     padding: 0 16px 24px 16px;
+    gap: 24px;
   }
 }
 
 .historyCard {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
+  border-radius: 12px;
 }
 
 .historyTitle {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: -0.2px;
 }
 
 .tableWrapper {
@@ -355,22 +396,24 @@
 }
 
 .table th {
-  padding: 10px 12px;
+  padding: 8px 10px;
   color: var(--text-secondary);
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .table td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-bottom: 1px solid #f3f4f6;
   vertical-align: middle;
+  color: var(--text-primary);
 }
 
 .emptyState {
   text-align: center;
   padding: 40px 0;
   color: var(--text-secondary);
+  font-size: 13px;
 }
 
 .statusWon {
@@ -386,22 +429,15 @@
 .statusPending {
   color: var(--color-blue);
   font-weight: 600;
-  animation: pulse 1.5s infinite;
 }
 
 .directionUp {
   color: var(--color-up);
-  background: rgba(16, 185, 129, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
   font-weight: 600;
 }
 
 .directionDown {
   color: var(--color-down);
-  background: rgba(239, 68, 68, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
   font-weight: 600;
 }
 
@@ -413,19 +449,13 @@
 }
 
 .errorAlert {
-  background: rgba(239, 68, 68, 0.1);
+  background: #fef2f2;
   color: var(--color-down);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid #fee2e2;
 }
 
 .successAlert {
-  background: rgba(16, 185, 129, 0.1);
+  background: #ecfdf5;
   color: var(--color-up);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  border: 1px solid #d1fae5;
 }

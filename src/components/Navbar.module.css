@@ -3,16 +3,14 @@
   top: 0;
   z-index: 100;
   width: 100%;
-  background: rgba(6, 9, 19, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,14 +25,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 700;
   letter-spacing: -0.5px;
 }
 
 .logoIcon {
   color: var(--color-up);
-  filter: drop-shadow(0 0 8px var(--color-up-glow));
 }
 
 .logoText {
@@ -42,38 +39,37 @@
 }
 
 .gradientText {
-  background: linear-gradient(135deg, var(--color-up), var(--color-blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--color-up);
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .navLink {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--text-secondary);
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
 }
 
 .navLink:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: #f3f4f6;
 }
 
 .active {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #f3f4f6;
+  border-color: #e5e7eb;
 }
 
 .authGroup {
@@ -82,27 +78,29 @@
 }
 
 .loginBtn {
-  background: linear-gradient(135deg, var(--color-up), #059669);
-  color: #ffffff;
-  padding: 8px 20px;
-  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 6px 14px;
+  font-size: 13.5px;
   font-weight: 600;
   border-radius: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .loginBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  background: #f9fafb;
+  border-color: #c5c7cb;
+  color: #111827;
 }
 
 .userAvatar {
-  width: 36px;
-  height: 36px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .userAvatar:hover {
@@ -114,9 +112,9 @@
     display: none;
   }
   .navLink {
-    padding: 8px;
+    padding: 6px;
   }
   .container {
-    padding: 12px 16px;
+    padding: 10px 16px;
   }
 }

@@ -6,12 +6,14 @@
   display: grid;
   grid-template-columns: 340px 1fr;
   gap: 32px;
+  background-color: var(--background);
 }
 
 @media (max-width: 960px) {
   .container {
     grid-template-columns: 1fr;
     padding: 16px;
+    gap: 24px;
   }
 }
 
@@ -26,10 +28,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  border-radius: 12px;
 }
 
 .walletTitle {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
@@ -42,18 +45,18 @@
 }
 
 .currency {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 .balanceAmount {
   font-family: var(--font-mono);
-  font-size: 42px;
-  font-weight: 800;
-  color: var(--color-gold);
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--text-primary);
   line-height: 1.1;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
 }
 
 .buttonGroup {
@@ -68,33 +71,32 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s ease;
+  font-size: 13.5px;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .depositBtn {
-  background: linear-gradient(135deg, var(--color-blue), #2563eb);
+  background: var(--color-blue);
   color: #ffffff;
-  box-shadow: 0 4px 10px var(--color-blue-glow);
 }
 
 .depositBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+  background: #1d4ed8;
 }
 
 .withdrawBtn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
 }
 
 .withdrawBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
+  background: #f9fafb;
+  border-color: #c5c7cb;
 }
 
 .withdrawBtn:disabled {
@@ -109,23 +111,26 @@
 }
 
 .statItem {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 10px;
-  padding: 12px 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
 }
 
 .statLabel {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
   text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .statValue {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
+  color: var(--text-primary);
   margin-top: 4px;
 }
 
@@ -137,49 +142,51 @@
 
 .tabs {
   display: flex;
-  gap: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 8px;
+  gap: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
 }
 
 .tabBtn {
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 8px 16px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--text-secondary);
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: 6px;
+  transition: all 0.15s ease;
 }
 
 .tabBtn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
+  background: #f3f4f6;
 }
 
 .activeTab {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
 }
 
 .historyListCard {
   padding: 24px;
   min-height: 400px;
+  border-radius: 12px;
 }
 
 .listHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .listTitle {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--text-primary);
 }
 
 .tableWrapper {
@@ -193,65 +200,64 @@
 }
 
 .table th {
-  padding: 12px;
+  padding: 10px;
   color: var(--text-secondary);
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #e5e7eb;
   text-align: left;
 }
 
 .table td {
-  padding: 14px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px 10px;
+  border-bottom: 1px solid #f3f4f6;
   vertical-align: middle;
+  color: var(--text-primary);
 }
 
 .badge {
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   display: inline-block;
 }
 
 .statusPending {
-  background: rgba(59, 130, 246, 0.1);
+  background: #eff6ff;
   color: var(--color-blue);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid #dbeafe;
 }
 
 .statusPendingUtr {
-  background: rgba(245, 158, 11, 0.1);
+  background: #fffbeb;
   color: var(--color-gold);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid #fef3c7;
 }
 
 .statusApproved {
-  background: rgba(16, 185, 129, 0.1);
+  background: #ecfdf5;
   color: var(--color-up);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid #d1fae5;
 }
 
 .statusRejected {
-  background: rgba(239, 68, 68, 0.1);
+  background: #fef2f2;
   color: var(--color-down);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid #fee2e2;
 }
 
 .enterUtrBtn {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
-  background: var(--color-gold);
-  color: #000000;
-  box-shadow: 0 2px 5px var(--color-gold-glow);
-  transition: all 0.2s ease;
+  background: #f59e0b;
+  color: #ffffff;
+  transition: all 0.15s ease;
 }
 
 .enterUtrBtn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 10px var(--color-gold-glow);
+  background: #d97706;
 }
 
 /* Modal styling */
@@ -261,8 +267,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(3, 4, 9, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -273,15 +279,16 @@
 .modalContent {
   width: 100%;
   max-width: 440px;
-  padding: 32px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modalIn 0.2s ease-out forwards;
+  border-radius: 12px;
 }
 
 @keyframes modalIn {
-  from { transform: scale(0.95); opacity: 0; }
+  from { transform: scale(0.97); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
@@ -292,13 +299,14 @@
 }
 
 .modalTitle {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 .closeBtn {
   color: var(--text-secondary);
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .closeBtn:hover {
@@ -308,12 +316,12 @@
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .inputLabel {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
@@ -325,35 +333,35 @@
 
 .modalInput {
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  padding: 12px;
+  padding: 10px 12px;
   font-family: var(--font-sans);
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 14.5px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .modalInput:focus {
   border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 .modalSubmitBtn {
   width: 100%;
-  background: linear-gradient(135deg, var(--color-blue), #2563eb);
+  background: var(--color-blue);
   color: #ffffff;
-  padding: 14px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 15px;
-  transition: all 0.2s ease;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.15s ease;
 }
 
 .modalSubmitBtn:hover:not(:disabled) {
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-  transform: translateY(-1px);
+  background: #1d4ed8;
 }
 
 .modalSubmitBtn:disabled {
@@ -363,9 +371,9 @@
 
 /* UPI Payment screen */
 .upiCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -379,15 +387,15 @@
   grid-template-columns: 1fr auto;
   gap: 8px;
   align-items: center;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
 }
 
 .upiValue {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -398,7 +406,7 @@
   color: var(--color-blue);
   font-size: 12px;
   font-weight: 600;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.15s ease;
 }
 
 .copyBtn:hover {
@@ -409,17 +417,18 @@
   width: 140px;
   height: 140px;
   background: #ffffff;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .instructionList {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
-  padding-left: 16px;
+  padding-left: 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -428,7 +437,7 @@
 .progressBarWrapper {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: #e5e7eb;
   border-radius: 2px;
   overflow: hidden;
   margin-top: 10px;
@@ -446,15 +455,15 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 24px 0;
+  padding: 16px 0;
   text-align: center;
 }
 
 .successCircle {
-  width: 56px;
-  height: 56px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  width: 48px;
+  height: 48px;
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
   color: var(--color-up);
   border-radius: 50%;
   display: flex;
