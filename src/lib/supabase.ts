@@ -24,7 +24,15 @@ export const supabaseAdmin = new Proxy({} as any, {
   get(target, prop) {
     if (!_adminClient) {
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project-id.supabase.co";
-      const key = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-service-key";
+      let key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+      // Fallback to valid anon key if service role key is not configured or is a placeholder
+      if (!key || key.includes("placeholder")) {
+        key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+              process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
+              "placeholder-anon-key";
+      }
+
       _adminClient = createClient(url, key, {
         auth: {
           persistSession: false,
