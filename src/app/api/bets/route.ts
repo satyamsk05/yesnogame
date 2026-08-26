@@ -5,7 +5,7 @@ import { ensureUserSynced, getLiveBTCPrice } from "@/lib/engine";
 
 export const dynamic = "force-dynamic";
 
-// GET: Retrieve user's bet history
+// GET: Retrieve user's bet history and lazy-settle expired rounds
 export async function GET() {
   try {
     const { userId } = await auth();
@@ -13,7 +13,102 @@ export async function GET() {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch user bets sorted by creation time
+    // 1. Fetch user's pending bets
+    const { data: pendingBets, error: pendingBetsError } = await supabaseAdmin
+      .from("bets")
+      .select(`
+        *,
+        market_rounds!inner (
+          id,
+          start_time,
+          end_time,
+          status,
+          start_price,
+          end_price
+        )
+      `)
+      .eq("user_id", userId)
+      .eq("status", "pending");
+
+    if (pendingBetsError) throw pendingBetsError;
+
+    // 2. Filter bets where the round end_time has passed
+    const now = new Date();
+    const expiredBets = (pendingBets || []).filter((bet: any) => {
+      const endTime = new Date(bet.market_rounds.end_time);
+      return endTime <= now;
+    });
+
+    // 3. Lazy Settle each expired prediction
+    if (expiredBets.length > 0) {
+      for (const bet of expiredBets) {
+        try {
+          const round = bet.market_rounds;
+          const endTimeMs = new Date(round.end_time).getTime();
+          
+          // Query Binance 1s candlesticks close price
+          const binanceUrl = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1s&startTime=${endTimeMs}&limit=1`;
+          const binanceRes = await fetch(binanceUrl);
+          const klines = await binanceRes.json();
+          let endPrice = parseFloat(round.start_price.toString());
+          
+          if (klines && klines[0]) {
+            endPrice = parseFloat(klines[0][4]); // Close price of the 1-second candle
+          }
+          
+          const startPrice = parseFloat(round.start_price.toString());
+          const stake = parseFloat(bet.stake.toString());
+          let status: "won" | "lost" | "refunded" = "lost";
+          let payout = 0;
+          
+          if (endPrice === startPrice) {
+            status = "refunded";
+            payout = stake;
+          } else if (bet.direction === "UP" && endPrice > startPrice) {
+            status = "won";
+            payout = stake * 1.8;
+          } else if (bet.direction === "DOWN" && endPrice < startPrice) {
+            status = "won";
+            payout = stake * 1.8;
+          }
+          
+          // Settle round and bet
+          await supabaseAdmin
+            .from("market_rounds")
+            .update({ status: "settled", end_price: endPrice })
+            .eq("id", round.id);
+            
+          await supabaseAdmin
+            .from("bets")
+            .update({ status, payout })
+            .eq("id", bet.id);
+            
+          if (payout > 0) {
+            const { data: wallet } = await supabaseAdmin
+              .from("wallets")
+              .select("id")
+              .eq("user_id", userId)
+              .single();
+              
+            if (wallet) {
+              await supabaseAdmin
+                .from("wallet_transactions")
+                .insert({
+                  wallet_id: wallet.id,
+                  type: status === "won" ? "bet_win" : "bet_refund",
+                  amount: payout,
+                  reference_id: bet.id,
+                  reference_type: "bets",
+                });
+            }
+          }
+        } catch (err) {
+          console.error(`Lazy settlement error for bet ${bet.id}:`, err);
+        }
+      }
+    }
+
+    // 4. Fetch updated bet history sorted by creation time
     const { data: bets, error } = await supabaseAdmin
       .from("bets")
       .select(`
@@ -30,7 +125,7 @@ export async function GET() {
 
     if (error) throw error;
 
-    // Fetch user wallet balance
+    // 5. Fetch user wallet balance
     const { data: wallet } = await supabaseAdmin
       .from("wallets")
       .select("balance")
@@ -51,7 +146,7 @@ export async function GET() {
   }
 }
 
-// POST: Place a prediction bet
+// POST: Place a prediction (creates round on-demand)
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
@@ -60,10 +155,10 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { roundId, direction, stake } = body;
+    const { direction, stake } = body;
 
     // Validate inputs
-    if (!roundId || !direction || !stake || stake <= 0) {
+    if (!direction || !stake || stake <= 0) {
       return NextResponse.json({ success: false, error: "Invalid inputs" }, { status: 400 });
     }
     if (direction !== "UP" && direction !== "DOWN") {
@@ -95,42 +190,36 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Insufficient balance" }, { status: 400 });
     }
 
-    // 2. Fetch the market round to verify constraints
+    // Get current live BTC price as entry price
+    const entryPrice = await getLiveBTCPrice();
+
+    // 2. Create a user-private 60-second round
+    const now = new Date();
+    const endTime = new Date(now.getTime() + 60 * 1000);
     const { data: round, error: roundError } = await supabaseAdmin
       .from("market_rounds")
-      .select("*")
-      .eq("id", roundId)
+      .insert({
+        market: "BTC/USD",
+        start_time: now.toISOString(),
+        end_time: endTime.toISOString(),
+        status: "open",
+        start_price: entryPrice,
+        end_price: null
+      })
+      .select()
       .single();
 
     if (roundError || !round) {
-      return NextResponse.json({ success: false, error: "Round not found" }, { status: 404 });
+      console.error("Round creation error:", roundError);
+      return NextResponse.json({ success: false, error: "Failed to create round" }, { status: 500 });
     }
-
-    if (round.status === "settled") {
-      return NextResponse.json({ success: false, error: "Round already settled" }, { status: 400 });
-    }
-
-    // Check Lockout Window: Cutoff is 15 seconds before the round ends
-    const now = new Date();
-    const endTime = new Date(round.end_time);
-    const secondsRemaining = (endTime.getTime() - now.getTime()) / 1000;
-
-    if (secondsRemaining <= 15) {
-      return NextResponse.json({
-        success: false,
-        error: "Round is locked. No more predictions allowed for this minute.",
-      }, { status: 400 });
-    }
-
-    // Get current live BTC price as entry price
-    const entryPrice = await getLiveBTCPrice();
 
     // 3. Insert the bet record
     const { data: bet, error: betInsertError } = await supabaseAdmin
       .from("bets")
       .insert({
         user_id: userId,
-        round_id: roundId,
+        round_id: round.id,
         direction,
         stake,
         entry_price: entryPrice,
@@ -145,7 +234,6 @@ export async function POST(req: Request) {
     }
 
     // 4. Debit the user's wallet via the ledger
-    // If the wallet balance constraint is breached (falls below zero), Postgres returns a DB error.
     const { error: ledgerError } = await supabaseAdmin
       .from("wallet_transactions")
       .insert({
@@ -159,8 +247,9 @@ export async function POST(req: Request) {
     if (ledgerError) {
       console.error("Ledger transaction error (balance check):", ledgerError);
 
-      // Clean up the bet we just created (revert)
+      // Clean up the bet and round we just created (revert)
       await supabaseAdmin.from("bets").delete().eq("id", bet.id);
+      await supabaseAdmin.from("market_rounds").delete().eq("id", round.id);
 
       return NextResponse.json({ success: false, error: "Insufficient balance or transaction failed" }, { status: 400 });
     }

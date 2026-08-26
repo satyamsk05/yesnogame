@@ -57,7 +57,6 @@ export default function Home() {
   };
 
   // Round states
-  const [activeRound, setActiveRound] = useState<Round | null>(null);
   const [roundHistory, setRoundHistory] = useState<Round[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isLocked, setIsLocked] = useState<boolean>(false);
@@ -67,6 +66,20 @@ export default function Home() {
   const [balance, setBalance] = useState<number>(0);
   const [bets, setBets] = useState<Bet[]>([]);
   const [wager, setWager] = useState<number>(100);
+
+  // Derive active round from user's oldest pending bet
+  const activeBet = bets.find((b) => b.status === "pending");
+  const activeRound = activeBet && activeBet.market_rounds
+    ? {
+        id: activeBet.round_id,
+        market: "BTC/USD",
+        start_time: activeBet.market_rounds.start_time,
+        end_time: activeBet.market_rounds.end_time,
+        status: activeBet.market_rounds.status,
+        start_price: activeBet.entry_price,
+        end_price: activeBet.market_rounds.end_price,
+      }
+    : null;
 
   // UI feedback states
   const [placingBet, setPlacingBet] = useState<boolean>(false);
@@ -92,7 +105,6 @@ export default function Home() {
         if (data.price && livePrice === 0) {
           setLivePrice(data.price);
         }
-        setActiveRound(data.activeRound);
         setRoundHistory(data.history);
 
         // Calculate skew/offset between server time and client clock
@@ -140,7 +152,11 @@ export default function Home() {
 
   // Timer Countdown loop (synchronized with server time)
   useEffect(() => {
-    if (!activeRound) return;
+    if (!activeRound) {
+      setTimeLeft(60);
+      setIsLocked(false);
+      return;
+    }
 
     const timer = setInterval(() => {
       const serverNow = Date.now() + serverTimeOffsetRef.current;
@@ -148,13 +164,11 @@ export default function Home() {
       const diff = Math.max(0, Math.floor((endTime - serverNow) / 1000));
 
       setTimeLeft(diff);
-      // Lock round when less than or equal to 15 seconds remain
-      setIsLocked(diff <= 15);
+      setIsLocked(true); // Lock further placements until the active prediction settles
 
       if (diff === 0) {
-        // Trigger immediate fetch to capture round transition
-        fetchRounds();
         fetchUserBets();
+        fetchRounds();
       }
     }, 1000);
 
@@ -165,7 +179,7 @@ export default function Home() {
   const handlePlaceBet = async (direction: "UP" | "DOWN") => {
     if (!isSignedIn) return;
     if (isLocked) {
-      setErrorMsg("Round is locked. Please wait for the next round.");
+      setErrorMsg("You already have an active prediction running.");
       return;
     }
     if (wager <= 0 || wager > balance) {
@@ -182,7 +196,6 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          roundId: activeRound?.id,
           direction,
           stake: wager,
         }),
