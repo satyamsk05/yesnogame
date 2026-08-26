@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
-import { TrendingUp, Clock, History, AlertCircle, Award, ArrowRight, Zap, Wallet, ChevronRight } from "lucide-react";
+import { TrendingUp, Clock, History, AlertCircle, Award, ArrowRight, Zap, Wallet, ChevronDown, MessageSquare, HelpCircle, Shield, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import BTCChart from "@/components/BTCChart";
@@ -45,6 +45,16 @@ export default function Home() {
   const prevPriceRef = useRef<number>(0);
   const [priceDirection, setPriceDirection] = useState<"up" | "down" | "flat">("flat");
   const [timeframe, setTimeframe] = useState<string>("1m");
+
+  // FAQ Accordion open states
+  const [faqOpen, setFaqOpen] = useState<{ [key: number]: boolean }>({});
+
+  const toggleFaq = (index: number) => {
+    setFaqOpen((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
 
   // Round states
   const [activeRound, setActiveRound] = useState<Round | null>(null);
@@ -205,7 +215,7 @@ export default function Home() {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.08,
       },
     },
   };
@@ -221,6 +231,26 @@ export default function Home() {
       },
     },
   };
+
+  // FAQs data list
+  const faqs = [
+    {
+      q: "How are Bitcoin price feeds verified?",
+      a: "All price feed updates stream in real-time from Binance's official WebSockets API. Our server-side settle engine matches trade prices against these atomic block triggers, guaranteeing absolute price transparency."
+    },
+    {
+      q: "How long is each round and how are payouts processed?",
+      a: "Each prediction round runs on a 1-minute cycle. Once the countdown expires, the settle engine immediately matches the end price against the start price. Winners are paid out an 80% net return, credited directly to their wallet balances in milliseconds."
+    },
+    {
+      q: "Are my deposits and withdrawals secure?",
+      a: "Yes. All deposits are backed by UPI reference numbers (UTR) checked manually by administrators. Our backend ledger tracks balance changes via double-entry accounting records, ensuring fund consistency."
+    },
+    {
+      q: "Is there a Telegram integration?",
+      a: "Yes! We run automated Telegram notifications for deposit status and payouts. You can link your account and receive messages on round updates and settlements in real-time."
+    }
+  ];
 
   // Render Marketing Landing Page for Unauthenticated users
   const renderLandingPage = () => {
@@ -386,7 +416,7 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* FEATURES Grid */}
+        {/* 6-FEATURES Grid */}
         <section id="features" className={styles.featuresBg}>
           <motion.div 
             className={styles.featuresContainer}
@@ -395,7 +425,7 @@ export default function Home() {
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <motion.div className={styles.featCard} variants={itemVariants}>
+            <motion.div className={styles.featCard} variants={itemVariants} whileHover={{ y: -4 }}>
               <div className={styles.featIconWrapper}>
                 <TrendingUp size={20} />
               </div>
@@ -405,7 +435,7 @@ export default function Home() {
               </p>
             </motion.div>
             
-            <motion.div className={styles.featCard} variants={itemVariants}>
+            <motion.div className={styles.featCard} variants={itemVariants} whileHover={{ y: -4 }}>
               <div className={styles.featIconWrapper}>
                 <Zap size={20} />
               </div>
@@ -415,7 +445,7 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <motion.div className={styles.featCard} variants={itemVariants}>
+            <motion.div className={styles.featCard} variants={itemVariants} whileHover={{ y: -4 }}>
               <div className={styles.featIconWrapper}>
                 <Wallet size={20} />
               </div>
@@ -424,7 +454,137 @@ export default function Home() {
                 Deposit using instant UPI QR codes. Quick verification and fast bank withdrawals.
               </p>
             </motion.div>
+
+            <motion.div className={styles.featCard} variants={itemVariants} whileHover={{ y: -4 }}>
+              <div className={styles.featIconWrapper} style={{ color: "var(--color-up)" }}>
+                <Check size={20} />
+              </div>
+              <h4 className={styles.featTitle}>Instant Payouts</h4>
+              <p className={styles.featDesc}>
+                Settle rounds atomically. Winners receive credit balances automatically inside 10ms of round end.
+              </p>
+            </motion.div>
+
+            <motion.div className={styles.featCard} variants={itemVariants} whileHover={{ y: -4 }}>
+              <div className={styles.featIconWrapper} style={{ color: "#38bdf8" }}>
+                <MessageSquare size={20} />
+              </div>
+              <h4 className={styles.featTitle}>Telegram Webhook</h4>
+              <p className={styles.featDesc}>
+                Sync deposit verifications and receive payout confirmations directly via automated bot notifications.
+              </p>
+            </motion.div>
+
+            <motion.div className={styles.featCard} variants={itemVariants} whileHover={{ y: -4 }}>
+              <div className={styles.featIconWrapper} style={{ color: "var(--color-gold)" }}>
+                <Shield size={20} />
+              </div>
+              <h4 className={styles.featTitle}>Ledger Integrity</h4>
+              <p className={styles.featDesc}>
+                Double-entry ledger accounting locks transactional data, preventing balance tampering or inconsistencies.
+              </p>
+            </motion.div>
           </motion.div>
+        </section>
+
+        {/* STATISTICS SECTION */}
+        <section className={styles.statsBg}>
+          <motion.div 
+            className={styles.statsContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={listContainerVariants}
+          >
+            <motion.h3 className={styles.sectionTitle} variants={itemVariants}>
+              Platform Health Statistics
+            </motion.h3>
+            
+            <div className={styles.statsGrid}>
+              <motion.div className={styles.statNumCard} variants={itemVariants} whileHover={{ y: -2 }}>
+                <div className={styles.statNum}>1.4M+</div>
+                <div className={styles.statNumLabel}>Total Bets</div>
+              </motion.div>
+              
+              <motion.div className={styles.statNumCard} variants={itemVariants} whileHover={{ y: -2 }}>
+                <div className={styles.statNum}>60s</div>
+                <div className={styles.statNumLabel}>Round Time</div>
+              </motion.div>
+
+              <motion.div className={styles.statNumCard} variants={itemVariants} whileHover={{ y: -2 }}>
+                <div className={styles.statNum}>99.98%</div>
+                <div className={styles.statNumLabel}>Settle Success</div>
+              </motion.div>
+
+              <motion.div className={styles.statNumCard} variants={itemVariants} whileHover={{ y: -2 }}>
+                <div className={styles.statNum}>14,500+</div>
+                <div className={styles.statNumLabel}>Active Users</div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* TELEGRAM SPOTLIGHT SHOWCASE */}
+        <section className={styles.telegramSectionBg}>
+          <div className={styles.telegramContainer}>
+            <motion.div 
+              className={styles.telegramTextCol}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h3 className={styles.sectionTitle}>
+                Telegram Webhook <span className={styles.telegramHighlight}>Callbacks</span>
+              </h3>
+              <p className={styles.telegramDesc}>
+                Connect your account to our dedicated Telegram Bot to verify cash-ins and receive instant push notifications when a prediction settles.
+              </p>
+              <div className={styles.telegramList}>
+                <div className={styles.telegramListItem}>
+                  <Check size={18} className={styles.telegramListIcon} />
+                  <span>Verify UPI deposits with UTR numbers instantly in chat.</span>
+                </div>
+                <div className={styles.telegramListItem}>
+                  <Check size={18} className={styles.telegramListIcon} />
+                  <span>Receive round lock alarms 15 seconds before closure.</span>
+                </div>
+                <div className={styles.telegramListItem}>
+                  <Check size={18} className={styles.telegramListIcon} />
+                  <span>Atomic win notifications showing net P/L credits.</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className={styles.telegramMockCol}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className={styles.telegramHeader}>
+                <div className={styles.telegramAvatar}>YN</div>
+                <div className={styles.telegramNameGroup}>
+                  <span className={styles.telegramBotName}>YesNo Admin Bot</span>
+                  <span className={styles.telegramBotStatus}>online</span>
+                </div>
+              </div>
+
+              <div className={`${styles.telegramBubble} ${styles.telegramBubbleUser}`}>
+                Verify deposit ₹500. UTR: 987654321098
+              </div>
+
+              <div className={styles.telegramBubble}>
+                🤖 <strong>Deposit Verified!</strong><br />
+                ₹500.00 has been credited to your wallet balance.<br /><br />
+                New Wallet Balance: <strong>₹1,250.00</strong>
+                <div className={styles.telegramInlineBtn}>
+                  Predict UP / DOWN
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </section>
 
         {/* HOW IT WORKS SECTION */}
@@ -472,6 +632,116 @@ export default function Home() {
               </motion.div>
             </motion.div>
           </div>
+        </section>
+
+        {/* ACCORDION FAQ SECTION */}
+        <section className={styles.faqBg}>
+          <div className={styles.faqContainer}>
+            <motion.h3 
+              className={styles.sectionTitle}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              Frequently Asked Questions
+            </motion.h3>
+
+            <motion.div 
+              className={styles.faqList}
+              variants={listContainerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+            >
+              {faqs.map((faq, index) => {
+                const isOpen = faqOpen[index];
+                return (
+                  <motion.div 
+                    key={index} 
+                    className={styles.faqItem}
+                    variants={itemVariants}
+                  >
+                    <button 
+                      className={styles.faqQuestionBtn} 
+                      onClick={() => toggleFaq(index)}
+                    >
+                      <span>{faq.q}</span>
+                      <motion.div
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        style={{ display: "inline-flex" }}
+                      >
+                        <ChevronDown size={18} />
+                      </motion.div>
+                    </button>
+                    
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className={styles.faqAnswer}
+                        >
+                          <div className={styles.faqAnswerText}>
+                            {faq.a}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* RISK COMPLIANCE DISCLAIMER */}
+        <section className={styles.disclaimerSection}>
+          <motion.div 
+            className={styles.disclaimerContainer}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <AlertCircle size={20} style={{ color: "var(--color-down)", flexShrink: 0, marginTop: 2 }} />
+            <div className={styles.disclaimerTextGroup}>
+              <h5 className={styles.disclaimerTitle}>Risk Disclosure Statement</h5>
+              <p className={styles.disclaimerDesc}>
+                Prediction markets involve significant market volatility. Forecasting digital currency outcomes carries risk of capital loss. Predict responsibly and ensure you understand the terms before making deposits or staking balances.
+              </p>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* FINAL CONVERSION SECTION */}
+        <section className={styles.bottomCtaBg}>
+          <motion.div 
+            className={styles.bottomCtaCard}
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h3 className={styles.bottomTitle}>Ready to Forecast the Next Move?</h3>
+            <p className={styles.bottomDesc}>
+              Join thousands of predictors tracing real-time blockchain ticks. Choose your side, watch the clock, and settle balances instantly.
+            </p>
+            <SignUpButton mode="modal">
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className={`${styles.landingCta} ${styles.primaryCta}`}
+                style={{ background: "#ffffff", color: "#111827", padding: "14px 28px" }}
+              >
+                <span>Register Account</span>
+                <ArrowRight size={16} />
+              </motion.button>
+            </SignUpButton>
+          </motion.div>
         </section>
 
         {/* MINIMAL FOOTER */}

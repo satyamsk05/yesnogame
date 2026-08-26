@@ -1021,3 +1021,356 @@
   }
 }
 
+/* =============================================================
+   EXPANDED RICH SECTIONS (SaaS Landing Overhaul)
+   ============================================================= */
+
+/* Statistics Grid Section */
+.statsBg {
+  padding: 80px 24px;
+  background: var(--background);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.statsContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.statNumCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 24px 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statNum {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.statNumLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Telegram Showcase Section */
+.telegramSectionBg {
+  padding: 100px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.telegramContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .telegramContainer {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+.telegramTextCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.telegramHighlight {
+  color: var(--color-blue);
+}
+
+.telegramDesc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.telegramList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.telegramListItem {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.telegramListIcon {
+  color: var(--color-up);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.telegramMockCol {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.telegramHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.telegramAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #38bdf8;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.telegramNameGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.telegramBotName {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.telegramBotStatus {
+  font-size: 11px;
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.telegramBubble {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  align-self: flex-start;
+  max-width: 85%;
+}
+
+.telegramBubbleUser {
+  background: #e0f2fe;
+  border-color: #bae6fd;
+  color: #0369a1;
+  align-self: flex-end;
+}
+
+.telegramInlineBtn {
+  margin-top: 8px;
+  width: 100%;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+  transition: background 0.15s ease;
+}
+
+.telegramInlineBtn:hover {
+  background: #0369a1;
+}
+
+/* FAQ Accordion Section */
+.faqBg {
+  padding: 100px 24px;
+  background: var(--background);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.faqContainer {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  text-align: center;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.faqItem {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease;
+}
+
+.faqItem:hover {
+  border-color: #d1d5db;
+}
+
+.faqQuestionBtn {
+  width: 100%;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: left;
+  outline: none;
+}
+
+.faqAnswer {
+  overflow: hidden;
+}
+
+.faqAnswerText {
+  padding: 0 20px 18px 20px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 12px;
+}
+
+/* Compliance Disclaimer Section */
+.disclaimerSection {
+  padding: 60px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.disclaimerContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: start;
+}
+
+.disclaimerTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.disclaimerTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.disclaimerDesc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Bottom Call to Action Section */
+.bottomCtaBg {
+  padding: 100px 24px;
+  background: #ffffff;
+}
+
+.bottomCtaCard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  background: #111827;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  color: #ffffff;
+  box-shadow: var(--shadow-lg);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+.bottomTitle {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  max-width: 500px;
+}
+
+.bottomDesc {
+  font-size: 16px;
+  color: #9ca3af;
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+
