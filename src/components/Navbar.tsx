@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
-import { TrendingUp, User, LayoutDashboard, Terminal } from "lucide-react";
+import { TrendingUp, User, LayoutDashboard } from "lucide-react";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
@@ -15,15 +15,17 @@ export default function Navbar() {
       <div className={styles.container}>
         <div className={styles.logoGroup}>
           <Link href="/" className={styles.logo}>
-            <TrendingUp size={24} className={styles.logoIcon} />
-            <span className={styles.logoText}>Yes<span className={styles.gradientText}>No</span></span>
+            <TrendingUp size={24} className={styles.logoIcon} style={{ color: "#10b981" }} />
+            <span className={styles.logoText}>
+              Predict<span className={styles.gradientText}>BTC</span>
+            </span>
           </Link>
         </div>
 
         <nav className={styles.nav}>
           {isSignedIn ? (
             <>
-              <Link href="/" className={`${styles.navLink} ${pathname === "/" ? styles.active : ""}`}>
+              <Link href="/trade" className={`${styles.navLink} ${pathname === "/trade" ? styles.active : ""}`}>
                 <LayoutDashboard size={18} />
                 <span>Trade</span>
               </Link>
@@ -34,15 +36,15 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <a href="#preview" className={styles.navLink}>
+              <Link href="/#preview" className={styles.navLink}>
                 <span>Markets</span>
-              </a>
-              <a href="#features" className={styles.navLink}>
+              </Link>
+              <Link href="/#features" className={styles.navLink}>
                 <span>Features</span>
-              </a>
-              <a href="#how-it-works" className={styles.navLink}>
+              </Link>
+              <Link href="/#how-it-works" className={styles.navLink}>
                 <span>How It Works</span>
-              </a>
+              </Link>
             </>
           )}
         </nav>
