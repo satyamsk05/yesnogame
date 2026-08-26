@@ -157,7 +157,7 @@ CREATE POLICY "Users/Admin can modify profiles" ON profiles
 
 -- Wallets Policies
 CREATE POLICY "Users can view their own wallet" ON wallets
-  FOR SELECT USING (auth.uid() = user_id OR true); -- simplifying for client fetches; check filters in API
+  FOR SELECT USING (auth.uid()::text = user_id OR true); -- simplifying for client fetches; check filters in API
 
 -- Wallet Transactions Policies
 CREATE POLICY "Users can view their own ledger history" ON wallet_transactions
