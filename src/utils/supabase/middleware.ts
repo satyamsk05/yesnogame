@@ -12,9 +12,14 @@ export const createClient = (request: NextRequest) => {
     },
   });
 
+  // Safe fallback if environment variables are not configured in hosting provider dashboard yet
+  if (!supabaseUrl || !supabaseKey) {
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient(
-    supabaseUrl!,
-    supabaseKey!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
