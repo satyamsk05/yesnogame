@@ -21,14 +21,30 @@ export default function Navbar() {
         </div>
 
         <nav className={styles.nav}>
-          <Link href="/" className={`${styles.navLink} ${pathname === "/" ? styles.active : ""}`}>
-            <LayoutDashboard size={18} />
-            <span>Trade</span>
-          </Link>
-          <Link href="/profile" className={`${styles.navLink} ${pathname === "/profile" ? styles.active : ""}`}>
-            <User size={18} />
-            <span>Profile & Wallet</span>
-          </Link>
+          {isSignedIn ? (
+            <>
+              <Link href="/" className={`${styles.navLink} ${pathname === "/" ? styles.active : ""}`}>
+                <LayoutDashboard size={18} />
+                <span>Trade</span>
+              </Link>
+              <Link href="/profile" className={`${styles.navLink} ${pathname === "/profile" ? styles.active : ""}`}>
+                <User size={18} />
+                <span>Profile & Wallet</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <a href="#preview" className={styles.navLink}>
+                <span>Markets</span>
+              </a>
+              <a href="#features" className={styles.navLink}>
+                <span>Features</span>
+              </a>
+              <a href="#how-it-works" className={styles.navLink}>
+                <span>How It Works</span>
+              </a>
+            </>
+          )}
         </nav>
 
         <div className={styles.authGroup}>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { SignInButton, useUser } from "@clerk/nextjs";
-import { TrendingUp, Clock, History, AlertCircle, Award } from "lucide-react";
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
+import { TrendingUp, Clock, History, AlertCircle, Award, ArrowRight, Zap, Wallet, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import BTCChart from "@/components/BTCChart";
 import styles from "./page.module.css";
@@ -37,7 +37,7 @@ interface Bet {
 }
 
 export default function Home() {
-  const { isSignedIn } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
 
   // Price & Market states
   const [livePrice, setLivePrice] = useState<number>(0);
@@ -181,7 +181,6 @@ export default function Home() {
       if (data.success) {
         setSuccessMsg(`Prediction placed successfully: ₹${wager} ${direction}`);
         fetchUserBets();
-        // Clear message after 4s
         setTimeout(() => setSuccessMsg(""), 4000);
       } else {
         setErrorMsg(data.error || "Failed to place prediction.");
@@ -200,7 +199,230 @@ export default function Home() {
     return `${m}:${s}`;
   };
 
-  // Helper to extract active predictions for the current round to draw line series overlays
+  // Render Marketing Landing Page for Unauthenticated users
+  const renderLandingPage = () => {
+    return (
+      <div className={styles.landingWrapper}>
+        <Navbar />
+        
+        {/* HERO SECTION */}
+        <section className={styles.hero}>
+          <div className={styles.badgeContainer}>
+            <div className={styles.pillBadge}>
+              <span className={styles.pillBadgeGreen}></span>
+              <span>Live BTC Round Predictions</span>
+            </div>
+          </div>
+          <h1 className={styles.headline}>Predict the Next Move.</h1>
+          <p className={styles.subheadline}>
+            Predict whether Bitcoin will move UP or DOWN. Choose your stake, watch the 1-minute market, and see the result.
+          </p>
+          <div className={styles.ctaGroup}>
+            <SignUpButton mode="modal">
+              <button className={`${styles.landingCta} ${styles.primaryCta}`}>
+                <span>Start Predicting</span>
+                <ArrowRight size={16} />
+              </button>
+            </SignUpButton>
+            <a href="#preview" className={`${styles.landingCta} ${styles.secondaryCta}`}>
+              Explore BTC Market
+            </a>
+          </div>
+        </section>
+
+        {/* INTERACTIVE PREVIEW WIDGET */}
+        <section id="preview" className={styles.previewWrapper}>
+          <div className={styles.previewContainer}>
+            <div className={styles.previewHeader}>
+              <div className={styles.previewTitleGroup}>
+                <h3 className={styles.previewTitle}>BTC / USD Market Preview</h3>
+                <span className={styles.previewSubtitle}>Real-time WebSocket feed</span>
+              </div>
+              <div className={styles.previewPriceGroup}>
+                <div className={styles.previewPrice}>
+                  ${livePrice > 0 ? livePrice.toLocaleString(undefined, { minimumFractionDigits: 2 }) : "Live Ticker..."}
+                </div>
+                <div className={styles.previewPriceLabel}>Bitcoin Price</div>
+              </div>
+            </div>
+
+            {/* Live Chart Container */}
+            <div style={{ height: 260, position: "relative", marginBottom: 12 }}>
+              <BTCChart
+                onPriceUpdate={handlePriceUpdate}
+                activeBets={[]}
+                roundStartPrice={activeRound ? parseFloat(activeRound.start_price?.toString() || "0") : null}
+              />
+            </div>
+
+            {/* Control Playground */}
+            <div className={styles.previewGrid}>
+              <div className={styles.previewLeft}>
+                <div className={styles.previewSelectorLabel}>Select Stake Amount (INR)</div>
+                <div className={styles.previewStakes}>
+                  {[50, 100, 250, 500].map((amt) => (
+                    <button
+                      key={amt}
+                      onClick={() => setWager(amt)}
+                      className={`${styles.previewStakeBtn} ${wager === amt ? styles.previewStakeBtnActive : ""}`}
+                    >
+                      ₹{amt}
+                    </button>
+                  ))}
+                </div>
+                
+                <div className={styles.previewActions}>
+                  <SignInButton mode="modal">
+                    <button className={styles.previewPredictBtn} style={{ backgroundColor: "var(--color-up)" }}>
+                      Predict UP (+80%)
+                    </button>
+                  </SignInButton>
+                  <SignInButton mode="modal">
+                    <button className={styles.previewPredictBtn} style={{ backgroundColor: "var(--color-down)" }}>
+                      Predict DOWN (+80%)
+                    </button>
+                  </SignInButton>
+                </div>
+              </div>
+
+              <div className={styles.previewRight}>
+                <div className={styles.previewTimerRow}>
+                  <span className={styles.previewSelectorLabel}>ROUND ENDS IN</span>
+                  <span className={styles.previewTimerVal}>{formatTime(timeLeft)}</span>
+                </div>
+                <div className={styles.previewResultNotice} style={{ backgroundColor: "rgba(16, 185, 129, 0.05)", border: "1px solid rgba(16, 185, 129, 0.1)", color: "var(--color-up)" }}>
+                  Last Round Result: <strong>UP (Winner)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FEATURES Grid */}
+        <section id="features" className={styles.featuresBg}>
+          <div className={styles.featuresContainer}>
+            <div className={styles.featCard}>
+              <div className={styles.featIconWrapper}>
+                <TrendingUp size={20} />
+              </div>
+              <h4 className={styles.featTitle}>Live BTC Markets</h4>
+              <p className={styles.featDesc}>
+                Connect to raw data streams straight from Binance WebSockets. Zero delay, 100% price accuracy.
+              </p>
+            </div>
+            
+            <div className={styles.featCard}>
+              <div className={styles.featIconWrapper}>
+                <Zap size={20} />
+              </div>
+              <h4 className={styles.featTitle}>Simple Predictions</h4>
+              <p className={styles.featDesc}>
+                No complicated order books or options sheets. Predict the next 1-minute price direction and win.
+              </p>
+            </div>
+
+            <div className={styles.featCard}>
+              <div className={styles.featIconWrapper}>
+                <Wallet size={20} />
+              </div>
+              <h4 className={styles.featTitle}>Secure INR Wallet</h4>
+              <p className={styles.featDesc}>
+                Deposit using instant UPI QR codes. Quick verification and fast bank withdrawals.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* HOW IT WORKS SECTION */}
+        <section id="how-it-works" className={styles.howItWorksBg}>
+          <div className={styles.howItWorksContainer}>
+            <h3 className={styles.sectionTitle}>How It Works</h3>
+            <div className={styles.stepsGrid}>
+              <div className={styles.stepCard}>
+                <div className={styles.stepNumber}>1</div>
+                <h5 className={styles.stepTitle}>Choose Amount</h5>
+                <p className={styles.stepDesc}>Decide how much you want to stake on the next 1-minute round.</p>
+              </div>
+
+              <div className={styles.stepCard}>
+                <div className={styles.stepNumber}>2</div>
+                <h5 className={styles.stepTitle}>Select Direction</h5>
+                <p className={styles.stepDesc}>Predict whether the round will settle UP or DOWN compared to the start price.</p>
+              </div>
+
+              <div className={styles.stepCard}>
+                <div className={styles.stepNumber}>3</div>
+                <h5 className={styles.stepTitle}>Watch Round</h5>
+                <p className={styles.stepDesc}>Wait for the 1-minute countdown clock to expire as live prices tick.</p>
+              </div>
+
+              <div className={styles.stepCard}>
+                <div className={styles.stepNumber}>4</div>
+                <h5 className={styles.stepTitle}>Collect Payout</h5>
+                <p className={styles.stepDesc}>Correct predictions win +80% profit credited immediately to your balance.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* MINIMAL FOOTER */}
+        <footer className={styles.landingFooter}>
+          <div className={styles.footerContainer}>
+            <div className={styles.footerTop}>
+              <div className={styles.footerLogoCol}>
+                <div className={styles.footerLogo}>
+                  <TrendingUp size={20} className={styles.logoIcon} style={{ marginRight: 6 }} />
+                  <span>YesNo</span>
+                </div>
+                <p className={styles.footerLogoDesc}>
+                  A clean, high-performance prediction market platform. Experience the thrill of 1-minute forecasting.
+                </p>
+              </div>
+
+              <div className={styles.footerLinksRow}>
+                <div className={styles.footerCol}>
+                  <span className={styles.footerColTitle}>Platform</span>
+                  <a href="#preview" className={styles.footerLink}>Markets</a>
+                  <SignInButton mode="modal">
+                    <button className={styles.footerLink} style={{ textAlign: "left" }}>Predict</button>
+                  </SignInButton>
+                  <a href="#how-it-works" className={styles.footerLink}>How It Works</a>
+                </div>
+
+                <div className={styles.footerCol}>
+                  <span className={styles.footerColTitle}>Legal</span>
+                  <span className={styles.footerLink} style={{ cursor: "pointer" }}>Terms of Service</span>
+                  <span className={styles.footerLink} style={{ cursor: "pointer" }}>Privacy Policy</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.footerBottom}>
+              <span>© {new Date().getFullYear()} YesNo Inc. All rights reserved.</span>
+              <span>Inspired by clean SaaS design principles.</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    );
+  };
+
+  // Render simple loader during session fetch
+  if (!isLoaded) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "var(--background)" }}>
+        <div style={{ width: 40, height: 40, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  // Route: Logged-out Landing page vs Logged-in Platform dashboard
+  if (!isSignedIn) {
+    return renderLandingPage();
+  }
+
+  // Active predictions list mapping
   const activeBetsForChart = bets
     .filter((b) => b.status === "pending" && activeRound && Number(b.round_id) === Number(activeRound.id))
     .map((b) => ({
@@ -300,60 +522,54 @@ export default function Home() {
             )}
 
             {/* Bet Input Controls */}
-            {isSignedIn ? (
-              <>
-                <div className={styles.wagerSection}>
-                  <div className={styles.wagerInputWrapper}>
-                    <span className={styles.currencyPrefix}>₹</span>
-                    <input
-                      type="number"
-                      value={wager}
-                      onChange={(e) => setWager(Math.max(1, parseInt(e.target.value) || 0))}
-                      className={styles.wagerInput}
+            <>
+              <div className={styles.wagerSection}>
+                <div className={styles.wagerInputWrapper}>
+                  <span className={styles.currencyPrefix}>₹</span>
+                  <input
+                    type="number"
+                    value={wager}
+                    onChange={(e) => setWager(Math.max(1, parseInt(e.target.value) || 0))}
+                    className={styles.wagerInput}
+                    disabled={isLocked || placingBet}
+                  />
+                </div>
+                <div className={styles.quickWagerRow}>
+                  {[50, 100, 250, 500, 1000].map((amt) => (
+                    <button
+                      key={amt}
+                      onClick={() => setWager(amt)}
+                      className={`${styles.quickWagerBtn} ${wager === amt ? styles.quickWagerActive : ""}`}
                       disabled={isLocked || placingBet}
-                    />
-                  </div>
-                  <div className={styles.quickWagerRow}>
-                    {[50, 100, 250, 500, 1000].map((amt) => (
-                      <button
-                        key={amt}
-                        onClick={() => setWager(amt)}
-                        className={`${styles.quickWagerBtn} ${wager === amt ? styles.quickWagerActive : ""}`}
-                        disabled={isLocked || placingBet}
-                      >
-                        ₹{amt}
-                      </button>
-                    ))}
-                  </div>
-                  <div className={styles.payoutNotice}>
-                    Potential Win: <span className={styles.payoutHighlight}>+₹{(wager * 0.8).toFixed(2)}</span>
-                  </div>
+                    >
+                      ₹{amt}
+                    </button>
+                  ))}
                 </div>
+                <div className={styles.payoutNotice}>
+                  Potential Win: <span className={styles.payoutHighlight}>+₹{(wager * 0.8).toFixed(2)}</span>
+                </div>
+              </div>
 
-                <div className={styles.actionButtons}>
-                  <button
-                    onClick={() => handlePlaceBet("UP")}
-                    disabled={isLocked || placingBet || wager > balance}
-                    className={`${styles.predictBtn} ${styles.btnUp}`}
-                  >
-                    <span>YES / UP</span>
-                    <span className={styles.btnSubtext}>Price rises</span>
-                  </button>
-                  <button
-                    onClick={() => handlePlaceBet("DOWN")}
-                    disabled={isLocked || placingBet || wager > balance}
-                    className={`${styles.predictBtn} ${styles.btnDown}`}
-                  >
-                    <span>NO / DOWN</span>
-                    <span className={styles.btnSubtext}>Price drops</span>
-                  </button>
-                </div>
-              </>
-            ) : (
-              <SignInButton mode="modal">
-                <button className={styles.loginPromptBtn}>Sign In to Predict</button>
-              </SignInButton>
-            )}
+              <div className={styles.actionButtons}>
+                <button
+                  onClick={() => handlePlaceBet("UP")}
+                  disabled={isLocked || placingBet || wager > balance}
+                  className={`${styles.predictBtn} ${styles.btnUp}`}
+                >
+                  <span>YES / UP</span>
+                  <span className={styles.btnSubtext}>Price rises</span>
+                </button>
+                <button
+                  onClick={() => handlePlaceBet("DOWN")}
+                  disabled={isLocked || placingBet || wager > balance}
+                  className={`${styles.predictBtn} ${styles.btnDown}`}
+                >
+                  <span>NO / DOWN</span>
+                  <span className={styles.btnSubtext}>Price drops</span>
+                </button>
+              </div>
+            </>
           </div>
         </div>
       </div>
